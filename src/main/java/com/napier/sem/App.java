@@ -36,6 +36,9 @@ public class App
         // Test the size of the returned data - should be 240124
         System.out.println(employees.size());
 
+        Employee emp2 = a.getEmployee2("Engineer");
+        a.displayEmployee2(emp2);
+
         a.disconnect();
 
     }
@@ -124,6 +127,94 @@ public class App
             return null;
         }
     }
+
+    public Employee getEmployee2(String role)
+    {
+            try
+            {
+                // Create an SQL statement
+                Statement stmt = con.createStatement();
+                // Create string for SQL statement
+                String strSelect =
+                        "SELECT employees.emp_no, employees.first_name, employees.last_name, titles.title "
+                                + "FROM employees "
+                                + "JOIN titles on employees.emp_no = titles.emp_no "
+                                + "WHERE titles.title = " + role;
+                // Execute SQL statement
+                ResultSet rset = stmt.executeQuery(strSelect);
+                // Return new employee if valid.
+                // Check one is returned
+                if (rset.next())
+                {
+                    Employee emp = new Employee();
+                    emp.emp_no = rset.getInt("emp_no");
+                    emp.first_name = rset.getString("first_name");
+                    emp.last_name = rset.getString("last_name");
+                    return emp;
+                }
+                else
+                    return null;
+            }
+            catch (Exception e)
+            {
+                System.out.println(e.getMessage());
+                System.out.println("Failed to get employee details");
+                return null;
+            }
+    }
+
+    public void displayEmployee2(Employee emp)
+    {
+        if (emp != null)
+        {
+            System.out.println(
+                    emp.emp_no + " "
+                            + emp.first_name + " "
+                            + emp.last_name + "\n"
+                            + "Salary:" + emp.salary + "\n");
+        }
+    }
+/*
+    public Employee getEmployeeBySalary(int ID)
+    {
+        try
+        {
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT employees.emp_no, employees.first_name, employees.last_name, salaries.salary "
+            + "FROM employees, salaries, titles "
+            + "WHERE employees.emp_no = salaries.emp_no "
+            + "AND employees.emp_no = titles.emp_no "
+            + "AND salaries.to_date = '9999-01-01' "
+            + "AND titles.to_date = '9999-01-01' "
+            + "AND titles.title = '<title>' "
+            + "ORDER BY employees.emp_no ASC";
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+            // Return new employee if valid.
+            // Check one is returned
+            if (rset.next())
+            {
+                Employee emp = new Employee();
+                emp.emp_no = rset.getInt("emp_no");
+                emp.first_name = rset.getString("first_name");
+                emp.last_name = rset.getString("last_name");
+                return emp;
+            }
+            else
+                return null;
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get employee details");
+            return null;
+        }
+    }
+*/
+
 
     public void connect()
     {
